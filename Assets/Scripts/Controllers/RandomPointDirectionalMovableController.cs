@@ -13,21 +13,18 @@ namespace Controllers
         private readonly NavMeshPath _path;
         private readonly NavMeshQueryFilter _queryFilter;
 
-        private readonly float _minDistanceToTarget;
         private Vector3 _targetPosition;
 
         public RandomPointDirectionalMovableController(
             IDirectionalMovable movable, 
             RandomTargetPositionGenerator randomPositionGenerator, 
             NavMeshPath path, 
-            NavMeshQueryFilter queryFilter, 
-            float minDistanceToTarget)
+            NavMeshQueryFilter queryFilter)
         {
             _movable = movable;
             _randomPositionGenerator = randomPositionGenerator;
             _path = path;
             _queryFilter = queryFilter;
-            _minDistanceToTarget = minDistanceToTarget;
 
             SetNewTarget();
         }
@@ -52,7 +49,7 @@ namespace Controllers
 
         private void SetNewTarget() => _targetPosition = _randomPositionGenerator.GetTargetPosition();
 
-        private bool IsTargetReached(float distanceToTarget) => distanceToTarget <= _minDistanceToTarget;
+        private bool IsTargetReached(float distanceToTarget) => distanceToTarget <= Constants.MinDistanceToTarget;
         private bool EnoughCornersInPath(NavMeshPath path) => path.corners.Length >= Constants.MinCornersCountInPathToMove;
     }
 }

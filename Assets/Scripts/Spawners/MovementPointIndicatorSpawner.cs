@@ -1,34 +1,57 @@
-﻿using PlayerInputs;
+﻿using Movement;
+using PlayerInputs;
 using UnityEngine;
+using Utils;
 
 namespace Spawners
 {
-    public class MovementPointIndicatorSpawner
+    public class MovementPointIndicatorSpawner : MonoBehaviour
     {
-        private readonly MovementPointIndicator _movementPointIndicatorPrefab;
+        private IDirectionalMovable _directionalMovable;
+        private MovementPointIndicator _movementPointIndicatorPrefab;
+
         private MovementPointIndicator _currentMovementPointIndicator;
 
-        private readonly float _movementPointYOffset;
-
-        public MovementPointIndicatorSpawner(MovementPointIndicator movementPointIndicatorPrefab, float movementPointYOffset)
+        public void Initialize(IDirectionalMovable directionalMovable, MovementPointIndicator movementPointIndicatorPrefab)
         {
+            _directionalMovable = directionalMovable;
             _movementPointIndicatorPrefab = movementPointIndicatorPrefab;
-            _movementPointYOffset = movementPointYOffset;
         }
 
-        public void CreateMovementPointIndicator(Vector3 position)
+        private void Update()
         {
-            _currentMovementPointIndicator = Object.Instantiate(_movementPointIndicatorPrefab,
-                new Vector3(position.x, position.y + _movementPointYOffset, position.z),
+            if (IsTargetReached() == false && IsAlreadyIndicatorExist() == false)
+            {
+                CreateMovementPointIndicator(_directionalMovable.TargetPosition);
+            }
+
+            if(IsAlreadyIndicatorExist())
+                MoveIndicatorToTarget(_directionalMovable.TargetPosition);
+
+            if(IsTargetReached() && IsAlreadyIndicatorExist())
+                DestroyCurrentIndicator();
+        }
+
+        private void CreateMovementPointIndicator(Vector3 position)
+        {
+            _currentMovementPointIndicator = Instantiate(_movementPointIndicatorPrefab,
+                new Vector3(position.x, position.y + Constants.MovementPointIndicatorYOffset, position.z),
                 Quaternion.identity);
         }
 
-        public void DestroyCurrentIndicator()
+        private void MoveIndicatorToTarget(Vector3 targetPosition)
         {
-            Object.Destroy(_currentMovementPointIndicator.gameObject);
+            _currentMovementPointIndicator.transform.position = targetPosition;
+
+        }
+
+        private void DestroyCurrentIndicator()
+        {
+            Destroy(_currentMovementPointIndicator.gameObject);
             _currentMovementPointIndicator = null;
         }
 
-        public bool IsAlreadyIndicatorExist() => _currentMovementPointIndicator != null;
+        private bool IsAlreadyIndicatorExist() => _currentMovementPointIndicator != null;
+        private bool IsTargetReached() => _directionalMovable.DistanceToTarget <= Constants.MinDistanceToDestroyMovementIndicator;
     }
 }

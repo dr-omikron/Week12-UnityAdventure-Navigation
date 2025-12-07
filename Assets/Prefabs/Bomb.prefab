@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3965038668019052744}
   - component: {fileID: 8368536008881824654}
   - component: {fileID: -7902653279572731874}
+  - component: {fileID: 8200362766154223755}
   m_Layer: 0
   m_Name: Bomb
   m_TagString: Untagged
@@ -83,16 +84,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90321f0bebc048e9b6804df207546805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _flickerMaterials:
-  - {fileID: 2100000, guid: 993e71ee87d162a4aa651570a2d7476e, type: 2}
-  - {fileID: 2100000, guid: d6c99db4ffb31384b9e0a2eb43fe0120, type: 2}
-  - {fileID: 2100000, guid: 009615e359938874bb97e106c4eefbd2, type: 2}
-  _flickInterval: 0.1
   _explosionDelay: 2
   _explosionRadius: 1.5
   _explosionDamage: 30
-  _explosionParticles: {fileID: 4596544553357837919, guid: 8eb503696b886e04faff8fc0f480d473,
-    type: 3}
+--- !u!114 &8200362766154223755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6724041921363389306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfd96cd509ab41e4a76be5a71cb24d1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2883167405806029975
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -179,8 +185,38 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d706f025ca6a4594ba0ff5412207089e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3612298018755749365}
   m_SourcePrefab: {fileID: 100100000, guid: d706f025ca6a4594ba0ff5412207089e, type: 3}
+--- !u!1 &2648812207739023814 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d706f025ca6a4594ba0ff5412207089e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2883167405806029975}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3612298018755749365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2648812207739023814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3820e8e0156241cf9d6b45fac645abef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _flickerMaterials:
+  - {fileID: 2100000, guid: 993e71ee87d162a4aa651570a2d7476e, type: 2}
+  - {fileID: 2100000, guid: d6c99db4ffb31384b9e0a2eb43fe0120, type: 2}
+  - {fileID: 2100000, guid: 009615e359938874bb97e106c4eefbd2, type: 2}
+  _flickInterval: 0.2
+  _explosionParticlesPrefab: {fileID: 4596544553357837919, guid: 8eb503696b886e04faff8fc0f480d473,
+    type: 3}
+  _bomb: {fileID: -7902653279572731874}
 --- !u!4 &3425453742390045564 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d706f025ca6a4594ba0ff5412207089e,

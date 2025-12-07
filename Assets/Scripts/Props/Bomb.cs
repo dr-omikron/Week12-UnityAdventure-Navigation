@@ -1,27 +1,28 @@
 ﻿using Health;
 using Timers;
 using UnityEngine;
+using Utils;
 
 namespace Props
 {
+    [RequireComponent(typeof(DamageableActivator))]
+
     public class Bomb : MonoBehaviour, IExplodable
     {
-        [SerializeField] private Material[] _flickerMaterials;
-        [SerializeField] private float _flickInterval;
-
         [SerializeField] private float _explosionDelay;
         [SerializeField] private float _explosionRadius;
         [SerializeField] private float _explosionDamage;
-        [SerializeField] private ParticleSystem _explosionParticles;
 
-        private Flicker _flicker;
         private Timer _activateTimer;
-        
+        private DamageableActivator _damageableActivator;
+
+        public bool IsActive { get ; private set; }
+        public bool IsExplode { get ; private set; }
 
         private void Awake()
         {
-            Renderer meshRenderer = GetComponentInChildren<Renderer>();
-            _flicker = new Flicker(meshRenderer, _flickerMaterials, _flickInterval);
+            _damageableActivator = GetComponent<DamageableActivator>();
+            _damageableActivator.Initialize(this);
             _activateTimer = new Timer(_explosionDelay);
         }
 
@@ -30,20 +31,19 @@ namespace Props
             if(_activateTimer.TimeIsUp)
                 Explode();
 
-            _flicker.Update();
             _activateTimer.Update(Time.deltaTime);
         }
 
         public void Activate()
         {
             _activateTimer.Start();
-            _flicker.Start();
+            IsActive = true;
         }
 
         public void Deactivate()
         {
             _activateTimer.Stop();
-            _flicker.Stop();
+            IsActive = false;
         }
 
         public void Explode()
@@ -58,8 +58,8 @@ namespace Props
                     damageable.TakeDamage(_explosionDamage);
             }
 
-            Instantiate(_explosionParticles, transform.position, Quaternion.identity);
-            Destroy(gameObject);
+            IsExplode = true;
+            Destroy(gameObject, Constants.ExplodableDestroyDelay);
         }
 
         private void OnDrawGizmos()

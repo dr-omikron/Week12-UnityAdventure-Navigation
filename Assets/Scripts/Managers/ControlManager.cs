@@ -12,13 +12,12 @@ namespace Managers
 {
     public class ControlManager : MonoBehaviour
     {
-        private const float MovementPointYOffset = 0.5f;
-
         [SerializeField] private Character _character;
         [SerializeField] private LayerMask _movableMask;
         [SerializeField] private float _idleTime;
         [SerializeField] private float _idlePositionGenerationRadius;
-        [SerializeField] private float _minDistanceToTarget;
+
+        [SerializeField] private MovementPointIndicatorSpawner _movementPointIndicatorSpawner;
         [SerializeField] private MovementPointIndicator _movementPointIndicatorPrefab;
 
         private Controller _characterController;
@@ -41,15 +40,14 @@ namespace Managers
             _randomTargetPositionGenerator = new RandomTargetPositionGenerator(_character.transform, _idlePositionGenerationRadius);
 
             _idleTimer = new Timer(_idleTime);
-
-            MovementPointIndicatorSpawner movementPointIndicatorSpawner =
-                new MovementPointIndicatorSpawner(_movementPointIndicatorPrefab, MovementPointYOffset); 
-
+ 
             NavMeshQueryFilter queryFilter = new NavMeshQueryFilter
             {
                 agentTypeID = 0,
                 areaMask = NavMesh.AllAreas
             };
+
+            _movementPointIndicatorSpawner.Initialize(_character, _movementPointIndicatorPrefab);
 
             _raycastPlayerController = new RaycastPlayerController(
                 _character, 
@@ -57,9 +55,7 @@ namespace Managers
                 _playerInput, 
                 _path,
                 queryFilter, 
-                _movableMask, 
-                _minDistanceToTarget,
-                movementPointIndicatorSpawner);
+                _movableMask);
 
             _playerCompositeController = new CompositeController(_raycastPlayerController,
                 new AlongMovableVelocityRotatableController(_character, _character));
@@ -69,8 +65,7 @@ namespace Managers
                     _character, 
                     _randomTargetPositionGenerator, 
                     _path, 
-                    queryFilter, 
-                    _minDistanceToTarget),
+                    queryFilter), 
 
                 new AlongMovableVelocityRotatableController(_character, _character));
 

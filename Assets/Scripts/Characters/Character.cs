@@ -1,6 +1,5 @@
 using Health;
 using Movement;
-using Props;
 using UnityEngine;
 
 namespace Characters
@@ -18,6 +17,10 @@ namespace Characters
         public Vector3 CurrentVelocity => _mover.CurrentVelocity;
         public Vector3 Position => transform.position;
         public Quaternion CurrentRotation => _rotator.CurrentRotation;
+        public float DistanceToTarget { get; private set; }
+        public Vector3 TargetPosition { get; private set;}
+        public void SetDistanceToTarget(float distanceToTarget) => DistanceToTarget = distanceToTarget;
+        public void SetTargetPosition(Vector3 targetPosition) => TargetPosition = targetPosition;
 
         private void Awake()
         {
@@ -32,13 +35,18 @@ namespace Characters
             _rotator.Update(Time.deltaTime);
         }
 
+        private void LateUpdate()
+        {
+            if(IsDamaged())
+                _healthComponent.ResetDamaged();
+        }
+
         public void SetMoveDirection(Vector3 inputDirection) => _mover.SetInputDirection(inputDirection);
 
         public void SetRotationDirection(Vector3 inputDirection) => _rotator.SetInputDirection(inputDirection);
 
         public void TakeDamage(float damage) => _healthComponent.TakeDamage(damage);
         public bool IsDamaged() => _healthComponent.IsDamaged;
-        public void ResetDamaged() => _healthComponent.ResetDamaged();
         public bool IsDead() => _healthComponent.IsDead;
         public float GetHeathPercent() => _healthComponent.HealthPercent;
     }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Movement
 {
-    public interface IDirectionalMovable : ITransformPosition
+    public interface IDirectionalMovable : ITransformPosition, IMovementTarget
     {
         Vector3 CurrentVelocity { get; }
 

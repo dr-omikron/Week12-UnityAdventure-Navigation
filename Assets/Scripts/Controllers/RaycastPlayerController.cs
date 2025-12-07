@@ -19,7 +19,6 @@ namespace Controllers
         private readonly NavMeshQueryFilter _queryFilter;
 
         private readonly MovementPointIndicatorSpawner _movementPointSpawner;
-        private readonly float _minDistanceToTarget;
         private Vector3 _targetPosition;
 
         public RaycastPlayerController(
@@ -28,9 +27,7 @@ namespace Controllers
             PlayerInput input, 
             NavMeshPath path, 
             NavMeshQueryFilter queryFilter,
-            LayerMask movableMask, 
-            float minDistanceToTarget, 
-            MovementPointIndicatorSpawner movementPointSpawner)
+            LayerMask movableMask)
         {
             _movable = movable;
             _raycaster = raycaster;
@@ -38,8 +35,6 @@ namespace Controllers
             _path = path;
             _queryFilter = queryFilter;
             _movableMask = movableMask;
-            _minDistanceToTarget = minDistanceToTarget;
-            _movementPointSpawner = movementPointSpawner;
 
             _targetPosition = movable.Position;
         }
@@ -51,27 +46,20 @@ namespace Controllers
             if (_input.IsRayCastingStart)
             {
                 if (_raycaster.CastRayFromCamera(_input.MousePosition, _movableMask, out RaycastHit hit))
-                {
                     _targetPosition = hit.point;
-
-                    if(_movementPointSpawner.IsAlreadyIndicatorExist())
-                        _movementPointSpawner.DestroyCurrentIndicator();
-
-                    _movementPointSpawner.CreateMovementPointIndicator(hit.point);
-                }
             }
-
-            float distanceToTarget = 0;
 
             if (NavMeshUtils.TryGetPath(_movable.Position, _targetPosition, _queryFilter, _path))
             {
-                distanceToTarget = NavMeshUtils.GetPathLength(_path);
+                float distanceToTarget = NavMeshUtils.GetPathLength(_path);
 
                 if(EnoughCornersInPath(_path) && IsTargetReached(distanceToTarget) == false)
                 {
                     _movable.SetMoveDirection(_path.corners[Constants.TargetCornerIndex] -
                                               _path.corners[Constants.StartCornerIndex]);
 
+                    _movable.SetDistanceToTarget(distanceToTarget);
+                    _movable.SetTargetPosition(_targetPosition);
                     IsMovementToTarget = true;
                     return;
                 }
@@ -79,12 +67,9 @@ namespace Controllers
 
             _movable.SetMoveDirection(Vector3.zero);
             IsMovementToTarget = false;
-
-            if(IsTargetReached(distanceToTarget) && _movementPointSpawner.IsAlreadyIndicatorExist())
-                _movementPointSpawner.DestroyCurrentIndicator();
         }
 
-        private bool IsTargetReached(float distanceToTarget) => distanceToTarget <= _minDistanceToTarget;
+        private bool IsTargetReached(float distanceToTarget) => distanceToTarget <= Constants.MinDistanceToTarget;
         private bool EnoughCornersInPath(NavMeshPath path) => path.corners.Length >= Constants.MinCornersCountInPathToMove;
     }
 }

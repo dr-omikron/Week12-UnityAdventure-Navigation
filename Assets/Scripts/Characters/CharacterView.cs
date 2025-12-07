@@ -45,6 +45,8 @@ namespace Characters
 
             if(_character.IsDamaged())
                 TakeDamage();
+            else
+                ResetDamage();
 
             if (_character.IsDead())
                 Die();
@@ -52,12 +54,7 @@ namespace Characters
             _healthBar.SetHealth(_character.GetHeathPercent());
         }
 
-        public void ResetDamagedFlag()
-        {
-            _character.ResetDamaged();
-            _animator.SetBool(_isDamaged, false);
-        }
-
+        private void ResetDamage() => _animator.SetBool(_isDamaged, false);
         private void StartRunning() => _animator.SetBool(_isRunningKey, true);
         private void StopRunning() => _animator.SetBool(_isRunningKey, false);
         private void TakeDamage() => _animator.SetBool(_isDamaged, true);

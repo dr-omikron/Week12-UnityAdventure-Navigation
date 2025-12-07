@@ -10,7 +10,6 @@ namespace Props
         private readonly Material[] _flickerMaterials;
 
         private readonly Timer _flickerTimer;
-        private bool _isActive;
         private bool _isFlickOn;
 
         public Flicker(Renderer targetRenderer, Material[] flickerMaterial, float flickerInterval)
@@ -22,9 +21,11 @@ namespace Props
             _flickerTimer = new Timer(flickerInterval);
         }
 
+        public bool IsActive { get; private set; }
+
         public void Update()
         {
-            if (_isActive == false)
+            if (IsActive == false)
                 return;
 
             if (_flickerTimer.TimeIsUp)
@@ -36,13 +37,13 @@ namespace Props
         public void Start()
         {
             _flickerTimer.Start();
-            _isActive = true;
+            IsActive = true;
         }
 
         public void Stop()
         {
             _flickerTimer.Stop();
-            _isActive = false;
+            IsActive = false;
 
             if(_isFlickOn)
                 SwitchMaterial();
